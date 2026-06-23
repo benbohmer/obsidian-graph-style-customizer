@@ -94,6 +94,7 @@ export interface GraphStyleSettings {
 	activeEdgeWidth: number;       // Width for edges connected to active node (default: 2.0)
 	defaultEdgeWidth: number;      // Width for edges within hop range (default: 1.0)
 	disconnectedEdgeWidth: number; // Width for disconnected edges (default: 0.5)
+	edgeWidthGradientEnabled: boolean; // When true, interpolate width from activeEdgeWidth (hop 1) to defaultEdgeWidth (last hop)
 
 	// Scope
 	applyToGlobalGraph: boolean;
@@ -136,6 +137,7 @@ export const DEFAULT_SETTINGS: GraphStyleSettings = {
 	activeEdgeWidth: 2.0,
 	defaultEdgeWidth: 1.0,
 	disconnectedEdgeWidth: 0.5,
+	edgeWidthGradientEnabled: false,
 
 	// Scope
 	applyToGlobalGraph: true,

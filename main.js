@@ -52,6 +52,7 @@ var DEFAULT_SETTINGS = {
   activeEdgeWidth: 2,
   defaultEdgeWidth: 1,
   disconnectedEdgeWidth: 0.5,
+  edgeWidthGradientEnabled: false,
   // Scope
   applyToGlobalGraph: true,
   applyToLocalGraph: true,
@@ -434,6 +435,10 @@ var GraphStyleSettingTab = class extends import_obsidian.PluginSettingTab {
         await this.plugin.saveSettings();
       }
     );
+    new import_obsidian.Setting(containerEl).setName("Edge width gradient").setDesc("When enabled, edge width interpolates from Active (hop 1) to Default (last hop) in By-hop mode").addToggle((toggle) => toggle.setValue(this.plugin.settings.edgeWidthGradientEnabled).onChange(async (value) => {
+      this.plugin.settings.edgeWidthGradientEnabled = value;
+      await this.plugin.saveSettings();
+    }));
     addSliderWithInput(
       containerEl,
       "Disconnected edge width",
@@ -1144,7 +1149,12 @@ var GraphStyler = class {
                 const t = (minHop - 1) / (this.settings.maxHops - 1);
                 alpha = 1 - t * (1 - this.settings.lastHopOpacity);
               }
-              width = this.settings.defaultEdgeWidth;
+              if (this.settings.edgeWidthGradientEnabled && this.settings.maxHops > 1) {
+                const t = (minHop - 1) / (this.settings.maxHops - 1);
+                width = this.settings.activeEdgeWidth - t * (this.settings.activeEdgeWidth - this.settings.defaultEdgeWidth);
+              } else {
+                width = this.settings.defaultEdgeWidth;
+              }
             } else if (minHop !== Infinity) {
               tint = this.parseColor(this.settings.edgeColor);
               alpha = 0.4;
@@ -1450,6 +1460,9 @@ var GraphStyleCustomizerPlugin = class extends import_obsidian3.Plugin {
     }
     if (this.settings.lastHopOpacity === void 0) {
       this.settings.lastHopOpacity = DEFAULT_SETTINGS.lastHopOpacity;
+    }
+    if (this.settings.edgeWidthGradientEnabled === void 0) {
+      this.settings.edgeWidthGradientEnabled = DEFAULT_SETTINGS.edgeWidthGradientEnabled;
     }
     let needsSave = false;
     if ((data == null ? void 0 : data.tagRules) && data.tagRules.length > 0) {

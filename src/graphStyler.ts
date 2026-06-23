@@ -483,7 +483,13 @@ export class GraphStyler {
 								const t = (minHop - 1) / (this.settings.maxHops - 1);
 								alpha = 1.0 - t * (1.0 - this.settings.lastHopOpacity);
 							}
-							width = this.settings.defaultEdgeWidth;
+							// Width: gradient interpolates from activeEdgeWidth (hop 1) to defaultEdgeWidth (last hop)
+							if (this.settings.edgeWidthGradientEnabled && this.settings.maxHops > 1) {
+								const t = (minHop - 1) / (this.settings.maxHops - 1);
+								width = this.settings.activeEdgeWidth - t * (this.settings.activeEdgeWidth - this.settings.defaultEdgeWidth);
+							} else {
+								width = this.settings.defaultEdgeWidth;
+							}
 						} else if (minHop !== Infinity) {
 							// Beyond maxHops but still connected
 							tint = this.parseColor(this.settings.edgeColor);

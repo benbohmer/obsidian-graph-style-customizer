@@ -557,6 +557,17 @@ export class GraphStyleSettingTab extends PluginSettingTab {
 			}
 		);
 
+		// Edge width gradient toggle
+		new Setting(containerEl)
+			.setName('Edge width gradient')
+			.setDesc('When enabled, edge width interpolates from Active (hop 1) to Default (last hop) in By-hop mode')
+			.addToggle(toggle => toggle
+				.setValue(this.plugin.settings.edgeWidthGradientEnabled)
+				.onChange(async (value) => {
+					this.plugin.settings.edgeWidthGradientEnabled = value;
+					await this.plugin.saveSettings();
+				}));
+
 		addSliderWithInput(
 			containerEl,
 			'Disconnected edge width',
