@@ -1138,7 +1138,12 @@ var GraphStyler = class {
             );
             if (minHop <= this.settings.maxHops) {
               tint = this.parseColor(this.settings.hopEdgeColors[minHop - 1] || this.settings.edgeColor);
-              alpha = 0.7;
+              if (this.settings.maxHops <= 1) {
+                alpha = 1;
+              } else {
+                const t = (minHop - 1) / (this.settings.maxHops - 1);
+                alpha = 1 - t * (1 - this.settings.lastHopOpacity);
+              }
               width = this.settings.defaultEdgeWidth;
             } else if (minHop !== Infinity) {
               tint = this.parseColor(this.settings.edgeColor);
