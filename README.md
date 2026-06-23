@@ -10,6 +10,7 @@ Visualize the connection distance from your active note:
 
 - **Active Node**: Highlight the currently focused note with a distinct color
 - **Hop-based Colors**: Set different colors for 1-hop, 2-hop, 3-hop... neighbors (up to 5 hops)
+- **Hop Opacity**: Control how faded the furthest neighbors appear. First hop is always 100% opaque; intermediate hops interpolate smoothly. Also applies to edges in By-hop mode.
 - **Disconnected Nodes**: Fade out unconnected nodes with adjustable opacity
 
 ### Edge Styling
@@ -102,6 +103,7 @@ Choose where styling applies:
 | Max hops | Maximum hop distance to highlight | 3 |
 | Selected node color | Color of the active node | #FF6B6B |
 | Hop colors | Colors for each hop level | Gradient palette |
+| Last hop opacity | Opacity of the furthest hop (0-100%). First hop is always 100%, intermediate hops interpolate | 40% |
 | Disconnected opacity | Opacity for unconnected nodes | 0.15 |
 | Edge color mode | How edge colors are determined | Single |
 | Active edge width | Width multiplier for active edges | 2.0 |
