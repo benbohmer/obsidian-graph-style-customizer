@@ -32,6 +32,7 @@ var import_obsidian3 = require("obsidian");
 // src/types.ts
 var DEFAULT_SETTINGS = {
   enabled: true,
+  colorNodes: true,
   maxHops: 3,
   // Node colors
   selectedNodeColor: "#FF6B6B",
@@ -301,6 +302,10 @@ var GraphStyleSettingTab = class extends import_obsidian.PluginSettingTab {
     containerEl.createEl("h1", { text: "Graph Style Customizer" });
     new import_obsidian.Setting(containerEl).setName("Enable styling").setDesc("Toggle graph style customization on/off").addToggle((toggle) => toggle.setValue(this.plugin.settings.enabled).onChange(async (value) => {
       this.plugin.settings.enabled = value;
+      await this.plugin.saveSettings();
+    }));
+    new import_obsidian.Setting(containerEl).setName("Color nodes").setDesc("When disabled, nodes use Obsidian default/group colours. Opacity, size, and shape still apply.").addToggle((toggle) => toggle.setValue(this.plugin.settings.colorNodes).onChange(async (value) => {
+      this.plugin.settings.colorNodes = value;
       await this.plugin.saveSettings();
     }));
     containerEl.createEl("h2", { text: "Node Colors" });
@@ -881,7 +886,9 @@ var GraphStyler = class {
     nodeEntries.forEach(([nodeId, node]) => {
       const style = this.nodeStyles.get(nodeId);
       if (style && node.circle) {
-        node.circle.tint = style.tint;
+        if (this.settings.colorNodes) {
+          node.circle.tint = style.tint;
+        }
         node.circle.alpha = style.alpha;
       }
     });
@@ -943,7 +950,9 @@ var GraphStyler = class {
       if (self.settings.enabled) {
         const style = self.nodeStyles.get(nodeId);
         if (style && node.circle) {
-          node.circle.tint = style.tint;
+          if (self.settings.colorNodes) {
+            node.circle.tint = style.tint;
+          }
           node.circle.alpha = style.alpha;
           const multiplier = style.size || 1;
           if (multiplier !== 1 && node.circle.scale) {
@@ -1082,7 +1091,9 @@ var GraphStyler = class {
         size
       });
       if (node.circle) {
-        node.circle.tint = this.parseColor(color);
+        if (this.settings.colorNodes) {
+          node.circle.tint = this.parseColor(color);
+        }
         node.circle.alpha = alpha;
         const multiplier = size || 1;
         if (multiplier !== 1 && node.circle.scale) {
@@ -1463,6 +1474,9 @@ var GraphStyleCustomizerPlugin = class extends import_obsidian3.Plugin {
     }
     if (this.settings.edgeWidthGradientEnabled === void 0) {
       this.settings.edgeWidthGradientEnabled = DEFAULT_SETTINGS.edgeWidthGradientEnabled;
+    }
+    if (this.settings.colorNodes === void 0) {
+      this.settings.colorNodes = DEFAULT_SETTINGS.colorNodes;
     }
     let needsSave = false;
     if ((data == null ? void 0 : data.tagRules) && data.tagRules.length > 0) {

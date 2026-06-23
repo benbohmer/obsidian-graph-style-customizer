@@ -177,6 +177,11 @@ export default class GraphStyleCustomizerPlugin extends Plugin {
 			this.settings.edgeWidthGradientEnabled = DEFAULT_SETTINGS.edgeWidthGradientEnabled;
 		}
 
+		// Ensure colorNodes exists (for existing installations)
+		if (this.settings.colorNodes === undefined) {
+			this.settings.colorNodes = DEFAULT_SETTINGS.colorNodes;
+		}
+
 		// Migrate legacy tagRules and folderRules to unified rules
 		let needsSave = false;
 		if (data?.tagRules && data.tagRules.length > 0) {

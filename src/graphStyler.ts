@@ -128,7 +128,9 @@ export class GraphStyler {
 		nodeEntries.forEach(([nodeId, node]) => {
 			const style = this.nodeStyles.get(nodeId);
 			if (style && node.circle) {
-				node.circle.tint = style.tint;
+				if (this.settings.colorNodes) {
+					node.circle.tint = style.tint;
+				}
 				node.circle.alpha = style.alpha;
 			}
 		});
@@ -200,7 +202,9 @@ export class GraphStyler {
 				const style = self.nodeStyles.get(nodeId);
 
 				if (style && node.circle) {
-					node.circle.tint = style.tint;
+					if (self.settings.colorNodes) {
+						node.circle.tint = style.tint;
+					}
 					node.circle.alpha = style.alpha;
 
 					// Apply size scaling relative to Obsidian's current scale
@@ -390,7 +394,9 @@ export class GraphStyler {
 
 			// Apply immediately as well (for initial render)
 			if (node.circle) {
-				node.circle.tint = this.parseColor(color);
+				if (this.settings.colorNodes) {
+					node.circle.tint = this.parseColor(color);
+				}
 				node.circle.alpha = alpha;
 
 				// Apply size scaling relative to Obsidian's current scale

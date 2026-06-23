@@ -71,6 +71,7 @@ export interface StylePreset {
 
 export interface GraphStyleSettings {
 	enabled: boolean;
+	colorNodes: boolean;          // When true, override node tint with hop colors / rules
 	maxHops: number;
 
 	// Node color settings
@@ -114,6 +115,7 @@ export interface GraphStyleSettings {
 
 export const DEFAULT_SETTINGS: GraphStyleSettings = {
 	enabled: true,
+	colorNodes: true,
 	maxHops: 3,
 
 	// Node colors

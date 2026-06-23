@@ -377,6 +377,17 @@ export class GraphStyleSettingTab extends PluginSettingTab {
 					await this.plugin.saveSettings();
 				}));
 
+		// Color nodes toggle
+		new Setting(containerEl)
+			.setName('Color nodes')
+			.setDesc('When disabled, nodes use Obsidian default/group colours. Opacity, size, and shape still apply.')
+			.addToggle(toggle => toggle
+				.setValue(this.plugin.settings.colorNodes)
+				.onChange(async (value) => {
+					this.plugin.settings.colorNodes = value;
+					await this.plugin.saveSettings();
+				}));
+
 		// === Node Colors Section ===
 		containerEl.createEl('h2', { text: 'Node Colors' });
 
