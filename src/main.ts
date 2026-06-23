@@ -167,6 +167,11 @@ export default class GraphStyleCustomizerPlugin extends Plugin {
 			this.settings.disconnectedEdgeWidth = DEFAULT_SETTINGS.disconnectedEdgeWidth;
 		}
 
+		// Ensure lastHopOpacity exists (for existing installations)
+		if (this.settings.lastHopOpacity === undefined) {
+			this.settings.lastHopOpacity = DEFAULT_SETTINGS.lastHopOpacity;
+		}
+
 		// Migrate legacy tagRules and folderRules to unified rules
 		let needsSave = false;
 		if (data?.tagRules && data.tagRules.length > 0) {

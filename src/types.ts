@@ -77,6 +77,7 @@ export interface GraphStyleSettings {
 	selectedNodeColor: string;
 	hopColors: string[];
 	disconnectedOpacity: number;
+	lastHopOpacity: number;       // Opacity of the furthest hop (0-1); intermediate hops are interpolated
 
 	// Node shape & size
 	defaultNodeShape: NodeShape;
@@ -118,6 +119,7 @@ export const DEFAULT_SETTINGS: GraphStyleSettings = {
 	selectedNodeColor: '#FF6B6B',
 	hopColors: ['#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD'],
 	disconnectedOpacity: 0.15,
+	lastHopOpacity: 0.4,           // Furthest hop fades to 40% opacity; first hop stays 100%
 
 	// Node shape & size
 	defaultNodeShape: NodeShape.CIRCLE,

@@ -37,6 +37,8 @@ var DEFAULT_SETTINGS = {
   selectedNodeColor: "#FF6B6B",
   hopColors: ["#4ECDC4", "#45B7D1", "#96CEB4", "#FFEAA7", "#DDA0DD"],
   disconnectedOpacity: 0.15,
+  lastHopOpacity: 0.4,
+  // Furthest hop fades to 40% opacity; first hop stays 100%
   // Node shape & size
   defaultNodeShape: "circle" /* CIRCLE */,
   defaultNodeSize: 1,
@@ -326,6 +328,19 @@ var GraphStyleSettingTab = class extends import_obsidian.PluginSettingTab {
         await this.plugin.saveSettings();
       }));
     }
+    addSliderWithInput(
+      containerEl,
+      "Last hop opacity",
+      "Opacity of the furthest neighbor hop (0-100%). First hop is always 100%, intermediate hops interpolate smoothly.",
+      this.plugin.settings.lastHopOpacity * 100,
+      0,
+      100,
+      5,
+      async (value) => {
+        this.plugin.settings.lastHopOpacity = value / 100;
+        await this.plugin.saveSettings();
+      }
+    );
     addSliderWithInput(
       containerEl,
       "Disconnected node opacity",
@@ -1035,7 +1050,12 @@ var GraphStyler = class {
         size = this.settings.activeNodeSize;
       } else if (hopLevel > 0 && hopLevel <= this.settings.maxHops) {
         color = (ruleStyle == null ? void 0 : ruleStyle.color) || this.settings.hopColors[hopLevel - 1] || this.settings.hopColors[0];
-        alpha = 1;
+        if (this.settings.maxHops <= 1) {
+          alpha = 1;
+        } else {
+          const t = (hopLevel - 1) / (this.settings.maxHops - 1);
+          alpha = 1 - t * (1 - this.settings.lastHopOpacity);
+        }
       } else if (!activeNodeId) {
         color = (ruleStyle == null ? void 0 : ruleStyle.color) || this.settings.hopColors[0];
         alpha = 1;
@@ -1422,6 +1442,9 @@ var GraphStyleCustomizerPlugin = class extends import_obsidian3.Plugin {
     }
     if (this.settings.disconnectedEdgeWidth === void 0) {
       this.settings.disconnectedEdgeWidth = DEFAULT_SETTINGS.disconnectedEdgeWidth;
+    }
+    if (this.settings.lastHopOpacity === void 0) {
+      this.settings.lastHopOpacity = DEFAULT_SETTINGS.lastHopOpacity;
     }
     let needsSave = false;
     if ((data == null ? void 0 : data.tagRules) && data.tagRules.length > 0) {

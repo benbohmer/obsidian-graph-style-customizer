@@ -352,9 +352,14 @@ export class GraphStyler {
 				alpha = 1.0;
 				size = this.settings.activeNodeSize;
 			} else if (hopLevel > 0 && hopLevel <= this.settings.maxHops) {
-				// N-hop neighbor
+				// N-hop neighbor — opacity interpolates smoothly from 1.0 (hop 1) to lastHopOpacity (final hop)
 				color = ruleStyle?.color || this.settings.hopColors[hopLevel - 1] || this.settings.hopColors[0];
-				alpha = 1.0;
+				if (this.settings.maxHops <= 1) {
+					alpha = 1.0;
+				} else {
+					const t = (hopLevel - 1) / (this.settings.maxHops - 1);
+					alpha = 1.0 - t * (1.0 - this.settings.lastHopOpacity);
+				}
 			} else if (!activeNodeId) {
 				// No active node (e.g., timelapse mode) - show all nodes normally
 				color = ruleStyle?.color || this.settings.hopColors[0];
@@ -471,7 +476,13 @@ export class GraphStyler {
 
 						if (minHop <= this.settings.maxHops) {
 							tint = this.parseColor(this.settings.hopEdgeColors[minHop - 1] || this.settings.edgeColor);
-							alpha = 0.7;
+							// Opacity interpolates from 1.0 (minHop=1) to lastHopOpacity (final hop)
+							if (this.settings.maxHops <= 1) {
+								alpha = 1.0;
+							} else {
+								const t = (minHop - 1) / (this.settings.maxHops - 1);
+								alpha = 1.0 - t * (1.0 - this.settings.lastHopOpacity);
+							}
 							width = this.settings.defaultEdgeWidth;
 						} else if (minHop !== Infinity) {
 							// Beyond maxHops but still connected

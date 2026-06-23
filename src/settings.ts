@@ -420,6 +420,19 @@ export class GraphStyleSettingTab extends PluginSettingTab {
 					}));
 		}
 
+		// Hop Opacity
+		addSliderWithInput(
+			containerEl,
+			'Last hop opacity',
+			'Opacity of the furthest neighbor hop (0-100%). First hop is always 100%, intermediate hops interpolate smoothly.',
+			this.plugin.settings.lastHopOpacity * 100,
+			0, 100, 5,
+			async (value) => {
+				this.plugin.settings.lastHopOpacity = value / 100;
+				await this.plugin.saveSettings();
+			}
+		);
+
 		// Disconnected Opacity with number input
 		addSliderWithInput(
 			containerEl,
